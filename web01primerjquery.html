@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .azul  {
+            color:blue
+        }
+    </style>
+</head>
+<body>
+    <h1>Selectores Jquery</h1>
+    <button id="boton1">Pulsar para algo...</button>
+    <h2 class="azul">Soy un título azul</h2>
+    <button class="azul">Botón azul</button>
+    <p>Aprendiendo Jquery 1</p>
+    <p>Aprendiendo Jquery 2</p>
+    <p>Aprendiendo Jquery 3</p>
+     <script src="js/jquery-3.7.1.js"></script>
+     <script>
+        //AQUI NUESTRO CODIGO JQUERY
+        //LA PRIMERA LINEA DENTRO DE JQUERY SERA
+        //QUE REALICE LAS ACCIONES AL CARGAR LA 
+        //PAGINA
+        $(document).ready(function() {
+            //alert("mi primera app!!!");
+            //SELECTOR DE ETIQUETA HTML
+            // $("h1").hide();
+            // //SELECTOR DE ID
+            // $("#boton1").hide();
+            //PODEMOS ASOCIAR ACCIONES A OBJETOS
+            $("p").click(function() {
+                //IMPRESCINDIBLE PARA EL DESARROLLO 
+                //FRONT ES LANZAR MENSAJES EN CONSOLA
+                console.log("Mostrando mensajes en consola Web");
+                //TENEMOS UNA PALABRA CLAVE LLAMADA this
+                //QUE HACE REFERENCIA AL OBJETO QUE HA 
+                //REALIZADO LA LLAMADA AL METODO
+                $(this).hide();
+            })
+
+            $("#boton1").click(function() {
+                alert("Soy un boton");
+            })
+        })
+     </script>
+</body>
+</html>
+
