@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Servicio XML Empleados</h1>
+    <button id="botonleer">Leer XML</button>
+    <h1 id="mensaje"></h1>
+    <ul id="listaempleados"></ul>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#botonleer").click(function() {
+                var url = "https://northwind.netcore.io/customers.xml";
+                console.log("Antes del servicio");
+                $.get(url, function(data){
+                    console.log("Leyendo servicio");
+                    var html = "";
+                    var numeroDatos = $(data).find("d2p1\\:Customer").length;
+                    $("#mensaje").text(numeroDatos);
+                    console.log($(data));
+                    $(data).find("d2p1\\:Customer").each(function() {
+                        var contactName = 
+                        $(this).find("d2p1\\:ContactName").first().text();
+                        html += "<li>" + contactName + "</li>";
+                    })
+                    $("#listaempleados").html(html);
+                })
+                console.log("Después del servicio");
+            })
+        })
+    </script>
+</body>
+</html>
