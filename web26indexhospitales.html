@@ -16,6 +16,7 @@
     <!-- Custom styles for this template -->
     <link href="css/customstyles.css" rel="stylesheet">     
     <link href="css/navbar-fixed.css" rel="stylesheet">
+    <link href="css/sweetalert2.min.css" rel="stylesheet">
   </head>
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -113,10 +114,15 @@
 </main>
     <script src="js/jquery-3.7.1.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
     <script>
         let urlHospital = "https://apicrudhospital.azurewebsites.net/";
         $(document).ready(function() {
-            var request = "/webresources/hospitales";
+          loadHospitales();
+        })
+
+        function loadHospitales(){
+          var request = "/webresources/hospitales";
             $.ajax({
                 url: urlHospital + request,
                 type: "GET",
@@ -133,27 +139,40 @@
                         html += "<td>" ;
                         html += 
                         "<a href='web26edithospital.html?idhospital="
-                        + hospital.idhospital + "'>Editar</a>";  
-                        html += "<a href='#' onclick='deleteHospital("
-                        + hospital.idhospital + ")'>Delete</a>";
+                        + hospital.idhospital + "' class='btn btn-info'>Editar</a>";  
+                        html += "<button href='#' onclick='deleteHospital("
+                        + hospital.idhospital + ")' class='btn btn-danger'>Delete</butto>";
                         html += "</td>";
                         html += "</tr>";
                     })
                     $("#tablahospitales tbody").html(html);
                 }
-            })
-        })
+            })          
+        }
 
         function deleteHospital(idHospital){
-            var requestDelete = "webresources/hospitales/delete/"
-            + idHospital;
-            $.ajax({
-                url: urlHospital + requestDelete,
-                type: "DELETE",
-                success: function(){
-                    console.log("Deleted");
-                }
-            })
+          Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              var requestDelete = "webresources/hospitales/delete/"
+              + idHospital;
+              $.ajax({
+                  url: urlHospital + requestDelete,
+                  type: "DELETE",
+                  success: function(){
+                      console.log("Deleted");
+                      loadHospitales();
+                  }
+              })
+            }
+          });
         }
     </script>
     </body>
