@@ -70,91 +70,95 @@
     </div>
 
     
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Hospitales</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" 
-                href="web26indexhospitales.html">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="web26createhospital.html">New hospital</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Hospitales</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" 
+          href="web26indexhospitales.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="web26createhospital.html">New hospital</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
 <main class="container">
   <div class="bg-body-tertiary p-5 rounded">
-    <h1>Hospitales CRUD</h1>
-    <table id="tablahospitales" class="table table-hover">
-        <thead>
-            <tr>
-                <th>Id hospital</th>
-                <th>Nombre</th>
-                <th>Dirección</th>
-                <th>Teléfono</th>
-                <th>Camas</th>
-                <th>Link</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+    <h1>Edit hospital</h1>
+    <label>Id hospital</label>
+    <input type="text" id="cajaidhospital" disabled class="form-control"/>
+    <label>Nombre</label>
+    <input type="text" id="cajanombre" class="form-control"/>
+    <label>Dirección</label>
+    <input type="text" id="cajadireccion" class="form-control"/>
+    <label>Teléfono</label>
+    <input type="text" id="cajatelefono" class="form-control"/>
+    <label>Camas</label>
+    <input type="text" id="cajacamas" class="form-control"/><br/>
+    <button class="btn btn-info" id="botonupdate">
+        Update hospital
+    </button>
+  </div>
 </main>
     <script src="js/jquery-3.7.1.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
     <script>
-        let urlHospital = "https://apicrudhospital.azurewebsites.net/";
+        let urlHospitales = "https://apicrudhospital.azurewebsites.net/";
         $(document).ready(function() {
-            var request = "/webresources/hospitales";
+            var params = 
+            new window.URLSearchParams(window.location.search);
+            var idHospitalURL = params.get('idhospital');
+            var requestFind = "webresources/hospitales/" + idHospitalURL;
+            //BUSCAMOS UN HOSPITAL Y LO DIBUJAMOS EN LAS CAJAS
             $.ajax({
-                url: urlHospital + request,
+                url: urlHospitales + requestFind,
                 type: "GET",
-                contentType: "application/json",
                 success: function(data){
-                    var html = "";
-                    $.each(data, function(index, hospital){
-                        html += "<tr>";
-                        html += "<td>" + hospital.idhospital + "</td>";
-                        html += "<td>" + hospital.nombre + "</td>";
-                        html += "<td>" + hospital.direccion + "</td>";
-                        html += "<td>" + hospital.telefono + "</td>";
-                        html += "<td>" + hospital.camas + "</td>";
-                        html += "<td>" ;
-                        html += 
-                        "<a href='web26edithospital.html?idhospital="
-                        + hospital.idhospital + "'>Editar</a>";  
-                        html += "<a href='#' onclick='deleteHospital("
-                        + hospital.idhospital + ")'>Delete</a>";
-                        html += "</td>";
-                        html += "</tr>";
-                    })
-                    $("#tablahospitales tbody").html(html);
+                    $("#cajaidhospital").val(data.idhospital);
+                    $("#cajanombre").val(data.nombre);
+                    $("#cajadireccion").val(data.direccion);
+                    $("#cajatelefono").val(data.telefono);
+                    $("#cajacamas").val(data.camas);
                 }
+            })
+
+            $("#botonupdate").click(function() {
+                var requestPut = "webresources/hospitales/put";
+                var idhospital = parseInt($("#cajaidhospital").val());
+                var nombre = $("#cajanombre").val();
+                var direccion = $("#cajadireccion").val();
+                var telefono = $("#cajatelefono").val();
+                var camas = parseInt($("#cajacamas").val());
+                var hospital = new Object();
+                hospital.idhospital = idhospital;
+                hospital.nombre = nombre;
+                hospital.direccion = direccion;
+                hospital.telefono = telefono;
+                hospital.camas = camas;
+                var dataJSON = JSON.stringify(hospital);
+                $.ajax({
+                    url: urlHospitales + requestPut,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: dataJSON,
+                    success: function(){
+                        console.log("Update");
+                        window.location.href = "web26indexhospitales.html";
+                    }
+                })
             })
         })
-
-        function deleteHospital(idHospital){
-            var requestDelete = "webresources/hospitales/delete/"
-            + idHospital;
-            $.ajax({
-                url: urlHospital + requestDelete,
-                type: "DELETE",
-                success: function(){
-                    console.log("Deleted");
-                }
-            })
-        }
     </script>
     </body>
 </html>
